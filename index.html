@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальные Руны</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .rune-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .rune {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .rune.selected {
+            border: 2px solid #4CAF50;
+        }
+        .rune.flip {
+            transform: rotateY(180deg);
+        }
+        .rune img {
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>Выберите Руны</h1>
+    <p>Выберите до 6 рун для получения интерпретации:</p>
+    <div class="rune-container" id="runeContainer">
+        <!-- Руны будут добавлены здесь динамически -->
+    </div>
+    <button id="submitRunes" style="margin-top: 20px; padding: 10px 20px;">Подтвердить выбор</button>
+
+    <script>
+        // Инициализация WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Список рун
+        const runes = [
+            { name: 'Феху', image: 'fehu.png' },
+            { name: 'Уруз', image: 'uruz.png' },
+            { name: 'Турисаз', image: 'thurisaz.png' },
+            { name: 'Ансуз', image: 'ansuz.png' },
+            { name: 'Райдо', image: 'raido.png' },
+            { name: 'Кеназ', image: 'kenaz.png' },
+            { name: 'Гебо', image: 'gebo.png' },
+            { name: 'Вуньо', image: 'wunjo.png' },
+            { name: 'Хагалаз', image: 'hagalaz.png' },
+            { name: 'Наутиз', image: 'nauthiz.png' },
+            { name: 'Иса', image: 'isa.png' },
+            { name: 'Йера', image: 'jera.png' },
+            { name: 'Эйваз', image: 'eihwaz.png' },
+            { name: 'Перт', image: 'perthro.png' },
+            { name: 'Альгиз', image: 'algiz.png' },
+            { name: 'Соулу', image: 'sowilo.png' },
+            { name: 'Тейваз', image: 'tiwaz.png' },
+            { name: 'Беркана', image: 'berkana.png' },
+            { name: 'Эваз', image: 'ehwaz.png' },
+            { name: 'Манназ', image: 'mannaz.png' },
+            { name: 'Лагуз', image: 'laguz.png' },
+            { name: 'Ингуз', image: 'ingwaz.png' },
+            { name: 'Дагаз', image: 'dagaz.png' },
+            { name: 'Отал', image: 'othala.png' }
+        ];
+
+        // Добавление рун на страницу
+        const runeContainer = document.getElementById('runeContainer');
+        runes.forEach((rune, index) => {
+            const runeDiv = document.createElement('div');
+            runeDiv.className = 'rune';
+            runeDiv.dataset.index = index;
+            runeDiv.innerHTML = `<img src="${rune.image}" alt="${rune.name}">`;
+            runeContainer.appendChild(runeDiv);
+        });
+
+        // Обработчик выбора рун
+        let selectedRunes = [];
+        runeContainer.addEventListener('click', (event) => {
+            if (event.target.closest('.rune')) {
+                const runeDiv = event.target.closest('.rune');
+                const index = runeDiv.dataset.index;
+                if (selectedRunes.includes(index)) {
+                    // Снять выделение
+                    selectedRunes = selectedRunes.filter(i => i !== index);
+                    runeDiv.classList.remove('selected');
+                    runeDiv.classList.remove('flip');
+                } else if (selectedRunes.length < 6) {
+                    // Добавить в выбор
+                    selectedRunes.push(index);
+                    runeDiv.classList.add('selected');
+                    runeDiv.classList.add('flip');
+                }
+            }
+        });
+
+        // Отправка выбранных рун
+        document.getElementById('submitRunes').addEventListener('click', () => {
+            if (selectedRunes.length > 0) {
+                const selectedRuneNames = selectedRunes.map(i => runes[i].name);
+                tg.sendData(JSON.stringify({ selectedRunes: selectedRuneNames }));
+            } else {
+                alert('Пожалуйста, выберите хотя бы одну руну.');
+            }
+        });
+    </script>
+</body>
+</html>
