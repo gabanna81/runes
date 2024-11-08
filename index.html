@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выберите Руны</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2a2a2a; /* Темный фон для общей атмосферы */
+            color: #ffffff; /* Светлый текст */
+        }
+
+        .overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8); /* Темная полупрозрачная подложка */
+        }
+
+        .content-container {
+            background: #333333; /* Темный фон для контейнера */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            text-align: center;
+            color: #f0e68c; /* Цвет заголовка (например, светло-желтый для выделения) */
+        }
+
+        .instruction {
+            text-align: center;
+            color: #e0e0e0; /* Светлый серый текст */
+        }
+
+        .rune-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .rune {
+            width: 100px;
+            height: 150px;
+            background: url('images/back.png') no-repeat center center; /* Картинка рубашки руны */
+            background-size: cover;
+            border: 2px solid #fff; /* Белая рамка вокруг руны */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .rune.selected {
+            transform: rotateY(180deg); /* Переворачиваем руну, когда она выбрана */
+            background: url('images/selected.png') no-repeat center center; /* Картинка выбранной руны */
+            background-size: cover;
+        }
+
+        .confirm-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #4caf50; /* Зеленая кнопка */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-button:hover {
+            background-color: #45a049; /* Немного более темный зеленый при наведении */
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="content-container">
+            <h1 class="title">Выберите Руны</h1>
+            <p class="instruction">Выберите до 3 рун для получения интерпретации:</p>
+            <div id="rune-selection" class="rune-container">
+                <!-- Контейнеры для рун (например, изображения рун) -->
+                <div class="rune" data-name="Феху"></div>
+                <div class="rune" data-name="Уруз"></div>
+                <div class="rune" data-name="Турисаз"></div>
+                <div class="rune" data-name="Ансуз"></div>
+                <div class="rune" data-name="Райдо"></div>
+                <div class="rune" data-name="Кеназ"></div>
+                <div class="rune" data-name="Гебо"></div>
+                <div class="rune" data-name="Вуньо"></div>
+            </div>
+            <button id="confirm-selection" class="confirm-button">Подтвердить выбор</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const runes = document.querySelectorAll('.rune');
+            let selectedRunes = [];
+
+            runes.forEach(rune => {
+                rune.addEventListener('click', function() {
+                    if (rune.classList.contains('selected')) {
+                        // Если руна уже выбрана, снять выбор
+                        rune.classList.remove('selected');
+                        selectedRunes = selectedRunes.filter(selected => selected !== rune);
+                    } else if (selectedRunes.length < 3) {
+                        // Если еще не выбраны 3 руны, выбрать текущую
+                        rune.classList.add('selected');
+                        selectedRunes.push(rune);
+                    }
+                });
+            });
+
+            document.getElementById('confirm-selection').addEventListener('click', function() {
+                if (selectedRunes.length === 3) {
+                    // Отправить данные в OpenAI API
+                    const selectedRuneNames = selectedRunes.map(rune => rune.dataset.name);
+                    console.log("Выбранные руны:", selectedRuneNames);
+                    alert("Ваши выбранные руны: " + selectedRuneNames.join(", "));
+                    
+                    fetch('http://127.0.0.1:5000/api/chatgpt', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ runes: selectedRuneNames })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Ответ от сервера:", data);
+                        alert("Ответ от OpenAI: " + data.response);
+                    })
+                    .catch(error => {
+                        console.error("Ошибка при отправке данных:", error);
+                        alert("Ошибка при отправке данных. Попробуйте снова.");
+                    });
+                } else {
+                    alert("Пожалуйста, выберите 3 руны для интерпретации.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
