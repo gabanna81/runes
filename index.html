@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выберите Руны</title>
+    <style>
+        .rune-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .rune {
+            width: 100px;
+            height: auto;
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 2 / 3;
+        }
+        .rune img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            transition: transform 0.5s;
+            backface-visibility: hidden;
+        }
+        .rune .back {
+            transform: rotateY(0deg);
+        }
+        .rune .front {
+            transform: rotateY(180deg);
+            display: none;
+        }
+        .rune.flip .front {
+            display: block;
+            transform: rotateY(0deg);
+        }
+        .rune.flip .back {
+            transform: rotateY(180deg);
+        }
+        #submitRunes {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Выберите Руны</h2>
+    <p>Выберите до 3 рун для получения интерпретации:</p>
+    <div class="rune-container" id="runeContainer"></div>
+    <button id="submitRunes">Подтвердить выбор</button>
+
+    <script>
+        // Инициализация WebApp
+        let tg;
+        function initializeTelegramWebApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.expand();
+                console.log('Telegram WebApp инициализирован успешно');
+            } else {
+                console.warn('WebApp не найден. Убедитесь, что код выполняется в Telegram WebApp.');
+            }
+        }
+
+        // Первоначальная попытка инициализации
+        initializeTelegramWebApp();
+
+        // Список всех рун (24)
+        const runes = [
+            { name: 'Феху', image: 'images/fehu.png' },
+            { name: 'Уруз', image: 'images/uruz.png' },
+            { name: 'Турисаз', image: 'images/thurisaz.png' },
+            { name: 'Ансуз', image: 'images/ansuz.png' },
+            { name: 'Райдо', image: 'images/raido.png' },
+            { name: 'Кеназ', image: 'images/kenaz.png' },
+            { name: 'Гебо', image: 'images/gebo.png' },
+            { name: 'Вуньо', image: 'images/wunjo.png' },
+            { name: 'Хагалаз', image: 'images/hagalaz.png' },
+            { name: 'Наутиз', image: 'images/nauthiz.png' },
+            { name: 'Иса', image: 'images/isa.png' },
+            { name: 'Йера', image: 'images/jera.png' },
+            { name: 'Эйваз', image: 'images/eihwaz.png' },
+            { name: 'Перт', image: 'images/perthro.png' },
+            { name: 'Альгиз', image: 'images/algiz.png' },
+            { name: 'Соулу', image: 'images/sowilo.png' },
+            { name: 'Тейваз', image: 'images/tiwaz.png' },
+            { name: 'Беркана', image: 'images/berkana.png' },
+            { name: 'Эваз', image: 'images/ehwaz.png' },
+            { name: 'Манназ', image: 'images/mannaz.png' },
+            { name: 'Лагуз', image: 'images/laguz.png' },
+            { name: 'Ингуз', image: 'images/ingwaz.png' },
+            { name: 'Дагаз', image: 'images/dagaz.png' },
+            { name: 'Отал', image: 'images/othala.png' }
+        ];
+
+        // Функция случайного выбора рун
+        function getRandomRunes(runes, count) {
+            const shuffled = runes.slice().sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, count);
+        }
+
+        // Случайный выбор 8 рун
+        const selectedRunes = getRandomRunes(runes, 8);
+        console.log('Выбранные руны:', selectedRunes); // Отладочное сообщение
+
+        // Добавление выбранных 8 рун на страницу
+        const runeContainer = document.getElementById('runeContainer');
+        runeContainer.innerHTML = ""; // Очищаем контейнер перед добавлением рун
+        selectedRunes.forEach((rune, index) => {
+            const runeDiv = document.createElement('div');
+            runeDiv.className = 'rune';
+            runeDiv.dataset.index = index;
+            runeDiv.innerHTML = `
+                <img src="images/back.png" alt="Рубашка" class="back">
+                <img src="${rune.image}" alt="${rune.name}" class="front" style="display: none;">
+            `;
+            runeContainer.appendChild(runeDiv);
+        });
+
+        // Проверка, что руны добавлены в контейнер
+        console.log('Руны добавлены в контейнер:', runeContainer.childNodes.length);
+
+        // Обработчик выбора рун
+        let selectedRuneIndices = [];
+        runeContainer.addEventListener('click', (event) => {
+            if (event.target.closest('.rune')) {
+                const runeDiv = event.target.closest('.rune');
+                const index = runeDiv.dataset.index;
+                const frontImage = runeDiv.querySelector('.front');
+                const backImage = runeDiv.querySelector('.back');
+
+                if (selectedRuneIndices.includes(index)) {
+                    // Снять выделение
+                    selectedRuneIndices = selectedRuneIndices.filter(i => i !== index);
+                    runeDiv.classList.remove('flip');
+                    frontImage.style.display = 'none';
+                    backImage.style.display = 'block';
+                } else if (selectedRuneIndices.length < 3) {
+                    // Добавить в выбор
+                    selectedRuneIndices.push(index);
+                    runeDiv.classList.add('flip');
+                    frontImage.style.display = 'block';
+                    backImage.style.display = 'none';
+                }
+            }
+        });
+
+        // Отправка выбранных рун и обращение к Telegram-боту
+        document.getElementById('submitRunes').addEventListener('click', () => {
+            if (selectedRuneIndices.length === 3) {
+                const selectedRuneNames = selectedRuneIndices.map(i => selectedRunes[i].name);
+                const message = `Ваши выбранные руны: ${selectedRuneNames.join(', ')}. Пожалуйста, интерпретируйте их.`;
+
+                // Повторная инициализация WebApp в случае, если объект не инициализирован
+                if (!tg) {
+                    initializeTelegramWebApp();
+                }
+
+                if (tg) {
+                    // Отправка данных в бот
+                    try {
+                        tg.sendData(JSON.stringify({ selectedRunes: selectedRuneNames }));
+                        console.log('Данные успешно отправлены в бот:', selectedRuneNames);
+                    } catch (error) {
+                        console.error('Ошибка при отправке данных в бот:', error);
+                    }
+                } else {
+                    console.warn('tg не инициализирован, данные не могут быть отправлены. Пожалуйста, убедитесь, что страница открыта в Telegram.');
+                }
+
+                // Сообщение пользователю
+                alert(`Вы выбрали следующие руны: ${selectedRuneNames.join(', ')}`);
+            } else {
+                alert('Пожалуйста, выберите ровно три руны.');
+            }
+        });
+    </script>
+</body>
+</html>
