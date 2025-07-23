@@ -49,7 +49,7 @@
       border-radius: 15px;
       max-width: 600px;
       width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      /* убрали рамку */
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
@@ -139,12 +139,14 @@
       transform: none;
     }
 
-    /* Мешочек - фиксированная позиция */
+    /* Мешочек - идеально по центру с анимацией */
     .bag-container {
       position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
       z-index: 1;
       pointer-events: none;
     }
@@ -152,14 +154,14 @@
     .bag-image {
       width: 200px;
       height: auto;
-      animation: swing 4s ease-in-out infinite;
+      animation: swing 3s ease-in-out infinite;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
     }
 
     @keyframes swing {
-      0% { transform: translateX(-50%) rotate(-1deg); }
-      50% { transform: translateX(-50%) rotate(1deg); }
-      100% { transform: translateX(-50%) rotate(-1deg); }
+      0% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+      100% { transform: rotate(-2deg); }
     }
 
     /* Для очень маленьких экранов */
