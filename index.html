@@ -30,14 +30,13 @@
       min-height: 100vh;
     }
 
-    /* Убираем все дополнительные слои */
     .overlay {
       position: relative;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px 20px 120px 20px; /* добавили отступ снизу для мешочка */
+      padding: 20px 20px 150px 20px; /* увеличили отступ снизу */
       z-index: 2;
     }
 
@@ -49,14 +48,13 @@
       border-radius: 15px;
       max-width: 600px;
       width: 100%;
-      margin-top: -80px; /* поднимает блок выше */
-      /* убрали рамку */
+      margin-top: -80px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .title {
       text-align: center;
-      color: #ffffff; /* белый цвет */
+      color: #ffffff;
       font-size: 1.8rem;
       margin-bottom: 10px;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -65,7 +63,7 @@
 
     .instruction {
       text-align: center;
-      color: #ffffff; /* белый цвет */
+      color: #ffffff;
       margin-bottom: 20px;
       font-size: 1rem;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -75,35 +73,35 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px; /* добавим расстояние между рунами */
-      max-width: 390px; /* или больше, в зависимости от размеров */
+      gap: 15px;
+      max-width: 500px;
       margin: 0 auto;
     }
 
     .rune {
-  width: 150px;
-  height: 210px;
-  background: url('back.png') no-repeat center center;
-  background-size: cover;
-  background-color: #1a1a1a; /* ← добавляем тёмную подложку под рубашку */
-  border: 2px solid #ffffff;
-  border-radius: 8px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+      width: 100px;
+      height: 140px;
+      background: url('back.png') no-repeat center center;
+      background-size: cover;
+      background-color: #1a1a1a;
+      border: 2px solid #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
 
     .rune:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(255, 255, 255, 0.4); /* белое свечение при наведении */
+      box-shadow: 0 6px 12px rgba(255, 255, 255, 0.4);
     }
 
     .rune.selected {
       background-image: none;
       background-color: #444;
-      border-color: #ffffff; /* белая обводка для выбранной руны */
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* белое свечение */
+      border-color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
     }
 
     .rune img {
@@ -144,20 +142,20 @@
       transform: none;
     }
 
-    /* Мешочек - идеально по центру с анимацией */
+    /* Исправленный мешочек - уменьшаем z-index */
     .bag-container {
       position: fixed;
-      bottom: 15px;
+      bottom: 10px;
       left: 0;
       right: 0;
       display: flex;
       justify-content: center;
-      z-index: 1;
+      z-index: 1; /* меньше чем у content */
       pointer-events: none;
     }
 
     .bag-image {
-      width: 200px;
+      width: 120px;
       height: auto;
       animation: swing 3s ease-in-out infinite;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
@@ -165,13 +163,40 @@
 
     @keyframes swing {
       0% { transform: rotate(0deg); }
-  25% { transform: rotate(3deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(-3deg); }
-  100% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-3deg); }
+      100% { transform: rotate(0deg); }
     }
 
-    /* Для очень маленьких экранов */
+    /* Исправленные медиа-запросы для увеличения рун */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .rune {
+        width: 120px;
+        height: 170px;
+      }
+      
+      .rune-container {
+        gap: 20px;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .rune {
+        width: 150px;
+        height: 210px;
+      }
+      
+      .rune-container {
+        gap: 25px;
+      }
+      
+      .bag-image {
+        width: 150px;
+      }
+    }
+
+    /* Для маленьких экранов оставляем стандартный размер */
     @media (max-width: 480px) {
       .content-container {
         margin: 10px;
@@ -179,12 +204,20 @@
       }
       
       .rune {
-        width: 70px;
-        height: 100px;
+        width: 80px;
+        height: 110px;
+      }
+      
+      .rune-container {
+        gap: 10px;
       }
       
       .bag-image {
-        width: 150px;
+        width: 100px;
+      }
+      
+      .overlay {
+        padding: 20px 10px 130px 10px;
       }
     }
 
