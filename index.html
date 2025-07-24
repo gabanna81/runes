@@ -79,8 +79,8 @@
     }
 
     .rune {
-      width: 100px;
-      height: 140px;
+      width: 150px;
+      height: 210px;
       background: url('back.png') no-repeat center center;
       background-size: cover;
       background-color: #1a1a1a;
@@ -169,34 +169,7 @@
       100% { transform: rotate(0deg); }
     }
 
-    /* Исправленные медиа-запросы для увеличения рун */
-    @media (min-width: 481px) and (max-width: 768px) {
-      .rune {
-        width: 120px;
-        height: 170px;
-      }
-      
-      .rune-container {
-        gap: 20px;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .rune {
-        width: 150px;
-        height: 210px;
-      }
-      
-      .rune-container {
-        gap: 25px;
-      }
-      
-      .bag-image {
-        width: 150px;
-      }
-    }
-
-    /* Для маленьких экранов оставляем стандартный размер */
+    /* Для маленьких экранов УМЕНЬШАЕМ руны */
     @media (max-width: 480px) {
       .content-container {
         margin: 10px;
@@ -204,8 +177,8 @@
       }
       
       .rune {
-        width: 80px;
-        height: 110px;
+        width: 90px !important;
+        height: 130px !important;
       }
       
       .rune-container {
@@ -218,6 +191,18 @@
       
       .overlay {
         padding: 20px 10px 130px 10px;
+      }
+    }
+
+    /* Для средних экранов тоже чуть уменьшаем */
+    @media (max-width: 768px) and (min-width: 481px) {
+      .rune {
+        width: 120px !important;
+        height: 170px !important;
+      }
+      
+      .rune-container {
+        gap: 15px;
       }
     }
 
