@@ -79,17 +79,18 @@
     }
 
     .rune {
-      width: 90px;
-      height: 130px;
-      background: url('back.png') no-repeat center center;
-      background-size: cover;
-      border: 2px solid #ffffff; /* белая обводка */
-      border-radius: 8px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
+  width: 90px;
+  height: 130px;
+  background: url('back.png') no-repeat center center;
+  background-size: cover;
+  background-color: #1a1a1a; /* ← добавляем тёмную подложку под рубашку */
+  border: 2px solid #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
 
     .rune:hover {
       transform: translateY(-2px);
